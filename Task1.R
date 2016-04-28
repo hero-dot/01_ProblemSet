@@ -1,25 +1,26 @@
 # Initialisiere die Daten
-vehicleData <- mtcars
-
+vehicleData <- mtcars["Toyota Corolla",]
+vehiclesData <- mtcars
 # TODO
-# Change the functions, so that they take a single row as an argument, not the whole dataset
 # Change the values of vehicleDim to the realexpressions
 
 # Funktion für Teilaufgabe a.) mit Test
 # Unformatierte Ausgabe einer bestimmten Zeile
-createAd <- function(vehicleData, carname){return(vehicleData[carname,])}
-createAd(vehicleData,"Toyota Corolla")
+createAd <- function(vehicleData){return(vehicleData)}
+createAd(vehicleData)
+
 
 # Funktion zu Teilaufgabe b.) mit Test
 # Formatierung einer der Daten zu einem Auto in die gewünschte Form
-createFormattedAd <- function(vehicleData,carname)
-  {vehicleDim <- c("mpg","cyl","disp","hp","drat","wt","qsec","vs","am","gear","carb") 
+createFormattedAd <- function(vehicleData)
+  {vehicleDim <- c("Fuel Efficiency:","Cylinder:","Horse Power:","1/4 mile time:") 
+   carname <- row.names(vehicleData)
    message(sprintf("********************\n"),
            sprintf("* %-17s*\n",carname),
-           sprintf("* %-5s = %-9s*\n",vehicleDim,c(paste(vehicleData[carname,]))),
+           sprintf("* %-5s = %-9s*\n",vehicleDim,c(paste(vehicleData[,c(1,2,4,7)]))),
            sprintf("********************\n"))
   }
-createFormattedAd(vehicleData,"Pontiac Firebird")
+createFormattedAd(vehicleData)
 
 
 # Funktion für Teilaufgabe c.) mit Test
@@ -28,10 +29,17 @@ createFormattedAd(vehicleData,"Pontiac Firebird")
 # Ist das Fahrzeug in den top 10% füge einen entsprechenden Vermerk hinzu.
 
 
+# Die Top Ten Werte für Leistung, Fuel Efficiency, 1/4 mile time 
+topHp <- quantile(vehiclesData["hp"],probs = 0.9,na.rm = T)
+quantiles
+quan
+
+
+
 createFormattedAdWithComparisons <- function(vehicleData)
 
 
-  
+#x <- quantile(vehicleData["hp"],probs = 0.9,na.rm = T)
 
 
 # Funktion für Teilaufgabe d.) mit Test  
