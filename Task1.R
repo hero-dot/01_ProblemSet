@@ -31,10 +31,10 @@ createFormattedAd(vehicleData)
 
 # Die Top Ten Werte für Leistung, Fuel Efficiency, 1/4 mile time 
 topHp <- quantile(vehiclesData["hp"],probs = 0.9,na.rm = T)
-quantiles
-quan
+topMpg <- quantile(vehiclesData["mpg"],probs = 0.1,na.rm = T)
+topQsec <- quantile(vehiclesData["qsec"],probs = 0.1,na.rm = T)
 
-
+quantiles <- c(topHp,topMpg, topQsec)
 
 createFormattedAdWithComparisons <- function(vehicleData)
 
