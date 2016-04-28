@@ -3,7 +3,9 @@ vehicleData <- mtcars["Camaro Z28",]
 vehiclesData <- mtcars
 library(dplyr)
 # TODO
-# 
+# Aufgabe c: darstellen der zufällig ausgewählten Autos mit displayAd und apply 
+
+# Aufgabe d: Anpassen der Funktion aus c auf die Daten aus c
 
 # Funktion für Teilaufgabe a.) mit Test
 # Unformatierte Ausgabe einer bestimmten Zeile
