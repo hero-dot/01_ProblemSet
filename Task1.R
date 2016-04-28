@@ -57,10 +57,6 @@ createFormattedAdWithComparisons(vehicleData)
 
 createFormattedAdWithComparisonsN <- function(vehiclesData,n)
 {
-  # For testing purpose, remove before the deploy
-  n <- 3
-  
-  
   # Die Top Ten Werte für Leistung, Fuel Efficiency, 1/4 mile time 
   topHp <- quantile(vehiclesData["hp"],probs = 0.9,na.rm = T)
   topMpg <- quantile(vehiclesData["mpg"],probs = 0.9,na.rm = T)
@@ -71,36 +67,61 @@ createFormattedAdWithComparisonsN <- function(vehiclesData,n)
   
   randVehicles <- select(sample_n(vehiclesData,n),mpg,cyl,hp,qsec)
   
-  
-  displayAd <- function(randVehicle)
+  for (i in 1:n)
   {
-    carname <- row.names(randVehicle)
+    carname <- row.names(randVehicles[i,])
     
-    if (randVehicle[,1]>= quantiles[2]) tempMpg <- "Top10%" else tempMpg <- ""
-    if (randVehicle[,3] >= quantiles[1]) tempHp <- "Top10%" else tempHp <- ""
-    if (randVehicle[,4] <= quantiles[3]) tempQsec <- "Top10%" else tempQsec <- ""
+    if (randVehicles[i,1]>= quantiles[2]) tempMpg <- "Top10%" else tempMpg <- ""
+    if (randVehicles[i,3] >= quantiles[1]) tempHp <- "Top10%" else tempHp <- ""
+    if (randVehicles[i,4] <= quantiles[3]) tempQsec <- "Top10%" else tempQsec <- ""
     
     evalTop <- c(tempMpg,"",tempHp,tempQsec)
     
     message(sprintf("********************\n"),
             sprintf("* %-17s*\n",carname),
-            sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(randVehicle)),evalTop),
+            sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(randVehicles[i,])),evalTop),
             sprintf("********************\n"))
     
-   }
-  apply(randVehicles,MARGIN = 1,FUN =  displayAd)
-
   }
-
-createFormattedAdWithComparisonsN(vehiclesData,12)
-
-vehiclesData[sample(nrow(vehiclesData),15),]
-
-sapply(vehiclesData[sample(nrow(vehiclesData),15),], createFormattedAdWithComparisons)
+}
   
+createFormattedAdWithComparisonsN(vehiclesData,5)
+
 # Hinzufügen des Preises und der Laufleistung
 
-carMileage <- read.csv("carMileage.csv", header = T)
-carPrices <- read.csv("carPrices.csv", header = T)
+createFormattedAdWithComparisonsNMilePrice <- function(vehiclesData,n)
+{
+  carMileage <- read.csv("carMileage.csv", header = T)
+  carPrices <- read.csv("carPrices.csv", header = T)
+  
+  vehiclesMlgPrice <- mutate(vehiclesData,mlg = carMileage[,2], price = carPrices[,2],type = carMileage[,1])
+  
+  # Die Top Ten Werte für Leistung, Fuel Efficiency, 1/4 mile time 
+  topHp <- quantile(vehiclesMlgPrice["hp"],probs = 0.9,na.rm = T)
+  topMpg <- quantile(vehiclesMlgPrice["mpg"],probs = 0.9,na.rm = T)
+  topQsec <- quantile(vehiclesMlgPrice["qsec"],probs = 0.1,na.rm = T)
+  quantiles <- c(topHp,topMpg, topQsec)
+  
+  vehicleDim <- c("Fuel Efficiency:","Cylinder:","Horse Power:","1/4 mile time:", "Mileage:", "Price") 
+  
+  randVehicles <- select(sample_n(vehiclesMlgPrice,n),mpg,cyl,hp,qsec,mlg,price,type)
+  
+  for (i in 1:n)
+  {
+    if (randVehicles[i,1]>= quantiles[2]) tempMpg <- "Top10%" else tempMpg <- ""
+    if (randVehicles[i,3] >= quantiles[1]) tempHp <- "Top10%" else tempHp <- ""
+    if (randVehicles[i,4] <= quantiles[3]) tempQsec <- "Top10%" else tempQsec <- ""
+    
+    evalTop <- c(tempMpg,"",tempHp,tempQsec,"","")
+    
+    carname <- randVehicles[i,"type"]
+    
+    message(sprintf("********************\n"),
+            sprintf("* %-17s*\n",carname),
+            sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(randVehicles[i,1:6])),evalTop),
+            sprintf("********************\n"))
+    
+  }
+}
 
-vehiclesMlgPrice <- mutate(vehiclesData,mlg = carMileage[,2], price = carPrices[,2],type = carMileage[,1])
+createFormattedAdWithComparisonsN(vehiclesData,15)
