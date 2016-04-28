@@ -124,4 +124,4 @@ createFormattedAdWithComparisonsNMilePrice <- function(vehiclesData,n)
   }
 }
 
-createFormattedAdWithComparisonsN(vehiclesData,15)
+createFormattedAdWithComparisonsNMilePrice(vehiclesData,5)
