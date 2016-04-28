@@ -98,8 +98,7 @@ sapply(vehiclesData[sample(nrow(vehiclesData),15),], createFormattedAdWithCompar
   
 # Hinzufügen des Preises und der Laufleistung
 
+carMileage <- read.csv("carMileage.csv", header = T)
 carPrices <- read.csv("carPrices.csv", header = T)
 
-carMileage <- read.csv("carMileage.csv", header = T)
-head(carMileage)
-vehicleData <- merge(carPrices, carMileage, by=c("Type"))
+vehiclesMlgPrice <- mutate(vehiclesData,mlg = carMileage[,2], price = carPrices[,2],type = carMileage[,1])
