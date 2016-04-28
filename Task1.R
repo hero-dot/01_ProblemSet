@@ -1,8 +1,9 @@
 # Initialisiere die Daten
 vehicleData <- mtcars["Camaro Z28",]
 vehiclesData <- mtcars
+library(dplyr)
 # TODO
-# Change the values of vehicleDim to the realexpressions
+# 
 
 # Funktion für Teilaufgabe a.) mit Test
 # Unformatierte Ausgabe einer bestimmten Zeile
@@ -15,13 +16,11 @@ createAd(vehicleData)
 createFormattedAd <- function(vehicleData)
   {vehicleDim <- c("Fuel Efficiency:","Cylinder:","Horse Power:","1/4 mile time:") 
    carname <- row.names(vehicleData)
-   message(sprintf("********************\n"),
-           sprintf("* %-17s*\n",carname),
-           sprintf("* %-5s = %-9s*\n",vehicleDim,c(paste(vehicleData[,c(1,2,4,7)]))),
+   message(sprintf("********************\n* %-17s*\n",carname),
+           sprintf("* %-5s = %-9s*\n",vehicleDim,c(paste(select(vehicleData,mpg,cyl,hp,qsec)))),
            sprintf("********************\n"))
-  }
+   }
 createFormattedAd(vehicleData)
-
 
 # Funktion für Teilaufgabe c.) mit Test
 # Vergleich der Wagen in Bezug auf die Kraftstoffeffizienz, der Leistung und der quarter
@@ -44,11 +43,10 @@ createFormattedAdWithComparisons <- function(vehicleData)
   
   evalTop <- c(tempMpg,"",tempHp,tempQsec)
   
-  message(sprintf("********************\n"),
-        sprintf("* %-17s*\n",carname),
-        sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(vehicleData[,c(1,2,4,7)])),evalTop),
-        sprintf("********************\n"))
-}
+  message(sprintf("************************************\n* %-33s*\n",carname),
+        sprintf("* %-16s = %-6s %6s *\n",vehicleDim,c(paste(select(vehicleData,mpg,cyl,hp,qsec))),evalTop),
+        sprintf("************************************\n"))
+  }
 
 createFormattedAdWithComparisons(vehicleData)
 
@@ -57,6 +55,10 @@ createFormattedAdWithComparisons(vehicleData)
 
 createFormattedAdWithComparisonsN <- function(vehiclesData,n)
 {
+  # For testing purpose, remove before the deploy
+  n <- 3
+  
+  
   # Die Top Ten Werte für Leistung, Fuel Efficiency, 1/4 mile time 
   topHp <- quantile(vehiclesData["hp"],probs = 0.9,na.rm = T)
   topMpg <- quantile(vehiclesData["mpg"],probs = 0.9,na.rm = T)
@@ -65,21 +67,28 @@ createFormattedAdWithComparisonsN <- function(vehiclesData,n)
 
   vehicleDim <- c("Fuel Efficiency:","Cylinder:","Horse Power:","1/4 mile time:") 
   
-  randVehicles <- vehiclesData[sample(nrow(vehiclesData),n),]
+  randVehicles <- select(sample_n(vehiclesData,n),mpg,cyl,hp,qsec)
   
-  carname <- row.names(vehiclesData[n,])
+  
+  displayAd <- function(randVehicle)
+  {
+    carname <- row.names(randVehicle)
+    
+    if (randVehicle[,1]>= quantiles[2]) tempMpg <- "Top10%" else tempMpg <- ""
+    if (randVehicle[,3] >= quantiles[1]) tempHp <- "Top10%" else tempHp <- ""
+    if (randVehicle[,4] <= quantiles[3]) tempQsec <- "Top10%" else tempQsec <- ""
+    
+    evalTop <- c(tempMpg,"",tempHp,tempQsec)
+    
+    message(sprintf("********************\n"),
+            sprintf("* %-17s*\n",carname),
+            sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(randVehicle)),evalTop),
+            sprintf("********************\n"))
+    
+   }
+  apply(randVehicles,MARGIN = 1,FUN =  displayAd)
 
-  if (vehiclesData[n,1] >= quantiles[2]) tempMpg <- "Top10%" else tempMpg <- ""
-  if (vehiclesData[n,4] >= quantiles[1]) tempHp <- "Top10%" else tempHp <- ""
-  if (vehiclesData[n,7] <= quantiles[3]) tempQsec <- "Top10%" else tempQsec <- ""
-
-  evalTop <- c(tempMpg,"",tempHp,tempQsec)
-
-  message(sprintf("********************\n"),
-          sprintf("* %-17s*\n",carname),
-          sprintf("* %-16s = %-6s %s *\n",vehicleDim,c(paste(vehiclesData[n,c(1,2,4,7)])),evalTop),
-          sprintf("********************\n"))
-}
+  }
 
 createFormattedAdWithComparisonsN(vehiclesData,12)
 
