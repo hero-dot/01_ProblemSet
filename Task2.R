@@ -44,7 +44,7 @@ summary(steps)
 
 # b) 
 # combine the assembly data set with the bill of materials and the steps information
-assBoM <- merge(assemblies,billOfMaterials, by = "tube_assembly_id")
+assBoM <- merge(assemblies,bom, by = "tube_assembly_id")
 
 # c)
 # change data set from wide to long with the id variable tube_assembly_id
